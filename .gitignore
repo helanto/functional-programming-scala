@@ -1,2 +1,24 @@
+# Matches all target directories anywhere in the repository
+target
+# Matches /project/project in same directory as .gitignore
+/project/project/
+
+# IDE specifics
+.idea
+.bloop
+.vscode
+.metals
+.bsp
+project/metals.sbt
+
+# OS specifics
+.DS_Store
+
+# SBT specifics
+.ivy2
+.sbt
+.jvmopts
+
+# Compilation specifics
 *.class
 *.log
