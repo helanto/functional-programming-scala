@@ -1,6 +1,6 @@
 package programming.functional.higherkinds
 
-import programming.functional.higherkinds.monad.{State, Writer}
+import programming.functional.higherkinds.monad.{Reader, State, Writer}
 import programming.functional.Monoid
 
 /** == Monad type class ==
@@ -124,7 +124,7 @@ object Monad {
     *    // famous implicitly keyword.
     *    implicitly[Monad[F]]
     *    // or directly using the summoner defined here.
-    *    Monad[A]
+    *    Monad[F]
     *  }
     * }}}
     * @param F the implicit monad.
