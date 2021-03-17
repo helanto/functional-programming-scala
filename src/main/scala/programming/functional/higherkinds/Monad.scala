@@ -188,6 +188,29 @@ object Monad {
     override def point[A](a: => A): Writer[C, A] = Writer(Monoid[C].zero, a)
   }
 
+  /** An instance of the type class for `State[S, *]` type constructor */
+  def stateMonad[S]: Monad[State[S, *]] = new Monad[State[S, *]] {
+
+    /** Allows us to have a value in a context `F[A]` and then feed that into a function that takes
+      * a normal value and returns a value in a new context `A => F[B]`.
+      *
+      * @param fa  a value in context F[A]
+      * @param afb a function from A to a new value in context.
+      * @return a value in context F[B]
+      */
+    override def flatMap[A, B](fa: State[S, A])(afb: A => State[S, B]): State[S, B] = State { s =>
+      val stateA = fa.run(s)
+      afb(stateA._2).run(stateA._1)
+    }
+
+    /** Lifts a value of A into context `F[A]`.
+      *
+      * @param a input value of A.
+      * @return the lifted value.
+      */
+    override def point[A](a: => A): State[S, A] = State(s => (s, a))
+  }
+
   /** An instance of the type class for `Reader[C, *]` type constructor */
   def readerMonad[C]: Monad[({ type λ[A] = Reader[C, A] })#λ] = new Monad[Reader[C, *]] {
 
