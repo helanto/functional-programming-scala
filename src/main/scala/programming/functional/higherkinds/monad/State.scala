@@ -14,15 +14,16 @@ package programming.functional.higherkinds.monad
   * As an example let's consider a stack; we can push and pop elements from the top of the stack.
   * {{{
   *  import programming.functional.higherkinds.monad.State
+  *  import programming.functional.higherkinds.monad.Trampoline._
   *  import programming.functional.higherkinds.Monad._
   *
   *  type Stack = List[Int]
   *  implicit val stackStateMonad = stateMonad[Stack]
   *
   *  // Pops an element from the top of the stack.
-  *  def pop(): State[Stack, Int] = State(stack => (stack.tail, stack.head))
+  *  def pop(): State[Stack, Int] = State(stack => done((stack.tail, stack.head)))
   *  // Pushes an element to the top of the stack.
-  *  def push(el: Int): State[Stack, Unit] = State(stack => (el :: stack, ()))
+  *  def push(el: Int): State[Stack, Unit] = State(stack => done((el :: stack, ())))
   *
   *  val stack = for {
   *    zero <- stackStateMonad.point[Int](0)
@@ -37,7 +38,7 @@ package programming.functional.higherkinds.monad
   *    fth  <- pop()      // 5 -> 4
   *  } yield (fst, snd, trd, fth)
   *
-  *  stack.run(List(3, 4, 5)) // (List(4, 5),(1, 2, 0, 3))
+  *  stack.run(List(3, 4, 5)).run // (List(4, 5),(1, 2, 0, 3))
   * }}}
   */
-case class State[S, +A](run: S => (S, A))
+case class State[S, +A](run: S => Trampoline[(S, A)])

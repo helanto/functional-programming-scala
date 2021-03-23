@@ -199,8 +199,8 @@ object Monad {
       * @return a value in context F[B]
       */
     override def flatMap[A, B](fa: State[S, A])(afb: A => State[S, B]): State[S, B] = State { s =>
-      val stateA = fa.run(s)
-      afb(stateA._2).run(stateA._1)
+      val (newState, a) = fa.run(s).run
+      Trampoline.tailcall(afb(a).run(newState))
     }
 
     /** Lifts a value of A into context `F[A]`.
@@ -208,7 +208,7 @@ object Monad {
       * @param a input value of A.
       * @return the lifted value.
       */
-    override def point[A](a: => A): State[S, A] = State(s => (s, a))
+    override def point[A](a: => A): State[S, A] = State(s => Trampoline.done(s, a))
   }
 
   /** An instance of the type class for `Reader[C, *]` type constructor */
