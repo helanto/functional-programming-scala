@@ -1,6 +1,6 @@
 package programming.functional.higherkinds
 
-import programming.functional.higherkinds.monad.{Reader, State, Writer}
+import programming.functional.higherkinds.monad.{Reader, State, Trampoline, Writer}
 import programming.functional.Monoid
 
 /** == Monad type class ==
@@ -231,6 +231,27 @@ object Monad {
     def flatMap[A, B](fa: Reader[C, A])(afb: A => Reader[C, B]): Reader[C, B] = Reader { c =>
       afb(fa.run(c)).run(c)
     }
+  }
+
+  /** An instance of the type class for `Trampoline` data type. A monad used for tail-call elimination. */
+  implicit case object TrampolineMonad extends Monad[Trampoline] {
+
+    /** Lifts a value of A into context `F[A]`.
+      *
+      * @param a input value of A.
+      * @return the lifted value.
+      */
+    override def point[A](a: => A): Trampoline[A] = Trampoline.done(a)
+
+    /** Allows us to have a value in a context `F[A]` and then feed that into a function that takes
+      * a normal value and returns a value in a new context `A => F[B]`.
+      *
+      * @param fa  a value in context F[A]
+      * @param afb a function from A to a new value in context.
+      * @return a value in context F[B]
+      */
+    override def flatMap[A, B](fa: Trampoline[A])(afb: A => Trampoline[B]): Trampoline[B] =
+      fa.flatMap(afb)
   }
 
   /** Extension methods for instances of [[Monad]] type class */
