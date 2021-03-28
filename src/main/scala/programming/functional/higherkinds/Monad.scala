@@ -1,7 +1,6 @@
 package programming.functional.higherkinds
 
-import programming.functional.higherkinds.monad.{Reader, State, Trampoline, Writer}
-import programming.functional.Monoid
+import programming.functional.higherkinds.monad.{Reader, State, Trampoline}
 
 /** == Monad type class ==
   * Monad extends over applicative, concerning with the following: ''how do you apply a function of
@@ -165,27 +164,6 @@ object Monad {
       * @return the lifted value.
       */
     override def point[A](a: => A): T => A = _ => a
-  }
-
-  /** An instance of the type class for `Writer[C, *]` type constructor */
-  def writerMonad[C: Monoid]: Monad[λ[α => Writer[C, α]]] = new Monad[Writer[C, *]] {
-
-    /** Allows us to have a value in a context `F[A]` and then feed that into a function that takes
-      * a normal value and returns a value in a new context `A => F[B]`.
-      *
-      * @param fa  a value in context F[A]
-      * @param afb a function from A to a new value in context.
-      * @return a value in context F[B]
-      */
-    override def flatMap[A, B](fa: Writer[C, A])(afb: A => Writer[C, B]): Writer[C, B] =
-      afb(fa.value).mapContext(context => Monoid[C].combine(fa.context, context))
-
-    /** Lifts a value of A into context `F[A]`.
-      *
-      * @param a input value of A.
-      * @return the lifted value.
-      */
-    override def point[A](a: => A): Writer[C, A] = Writer(Monoid[C].zero, a)
   }
 
   /** An instance of the type class for `State[S, *]` type constructor */
