@@ -1,4 +1,5 @@
 # functional-programming-scala
+[![Scala CI](https://github.com/helanto/functional-programming-scala/actions/workflows/scala.yml/badge.svg)](https://github.com/helanto/functional-programming-scala/actions/workflows/scala.yml)
 
 ## A story about kinds
 **Type constructors** such as `List` or `Option` or `DStream` take other types as parameters to eventually produce concrete types. This reminds us of **functions** or **value constructors**, which take values as parameters to produce new values. Similarities do not end here; type constructors can be partially applied in the same fashion that functions can:
