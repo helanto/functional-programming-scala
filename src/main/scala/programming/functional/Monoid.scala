@@ -60,4 +60,11 @@ object Monoid {
 
     def zero: List[A] = List.empty[A]
   }
+
+  /// Gives access to the Monoid type class methods using an OOP style.
+  implicit class MonoidOps[A](val a: A) extends AnyVal {
+    def combine(b: A)(implicit monoid: Monoid[A]): A = monoid.combine(a, b)
+
+    def zero(implicit monoid: Monoid[A]): A = monoid.zero
+  }
 }

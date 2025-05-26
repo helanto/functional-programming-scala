@@ -1,6 +1,36 @@
 # functional-programming-scala
 [![Scala CI](https://github.com/helanto/functional-programming-scala/actions/workflows/scala.yml/badge.svg)](https://github.com/helanto/functional-programming-scala/actions/workflows/scala.yml)
 
+## Using this project.
+You need sbt installed to run this project. At the time of writing, `sbt` uses Java versions 8 or 11.
+To run the project download the sbt from sources, and store under `/opt`:
+```bash
+$ sudo ln -sf /opt/sbt-v1.11.0/bin/sbt /usr/local/bin/sbt
+$ vim /usr/local/bin/sbt
+#!/usr/bin/env bash
+# Manually edited
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-11.jdk/Contents/Home
+```
+
+Time to run the project:
+```bash
+$ sbt console
+scala > import programming.functional.Monoid
+import programming.functional.Monoid
+
+scala> import programming.functional.Monoid._
+import programming.functional.Monoid._
+
+scala> Monoid[String].zero.combine("Hello")
+val res0: String = Hello
+
+scala> 8.combine(2)
+val res1: Int = 10
+
+scala> false.combine(true)
+val res2: Boolean = true
+```
+
 ## A story about kinds
 **Type constructors** such as `List` or `Option` or `DStream` take other types as parameters to eventually produce concrete types. This reminds us of **functions** or **value constructors**, which take values as parameters to produce new values. Similarities do not end here; type constructors can be partially applied in the same fashion that functions can:
 ```scala
